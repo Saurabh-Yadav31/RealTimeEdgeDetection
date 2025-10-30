@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "RealTimeEdgeDetection"
-include(":app")
+include(":app", ":sdk")

@@ -1,36 +1,73 @@
 package com.example.realtimeedgedetection;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.SurfaceView;
 
-import com.example.realtimeedgedetection.databinding.ActivityMainBinding;
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
 
-    // Used to load the 'realtimeedgedetection' library on application startup.
+    private JavaCameraView cameraView;
+    private Mat inputFrame, processedFrame;
+
     static {
-        System.loadLibrary("realtimeedgedetection");
+        System.loadLibrary("opencv_java4");
+        System.loadLibrary("native-lib");
     }
 
-    private ActivityMainBinding binding;
+    public native void processImage(long matAddrInput, long matAddrOutput);
+
+    private final BaseLoaderCallback loaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            if (status == LoaderCallbackInterface.SUCCESS) {
+                cameraView.enableView();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        // Example of a call to a native method
-        TextView tv = binding.sampleText;
-        tv.setText(stringFromJNI());
+        cameraView = findViewById(R.id.camera_view);
+        cameraView.setVisibility(SurfaceView.VISIBLE);
+        cameraView.setCvCameraViewListener(this);
     }
 
-    /**
-     * A native method that is implemented by the 'realtimeedgedetection' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
+    @Override
+    public void onCameraViewStarted(int width, int height) {
+        inputFrame = new Mat();
+        processedFrame = new Mat();
+    }
+
+    @Override
+    public void onCameraViewStopped() {
+        inputFrame.release();
+        processedFrame.release();
+    }
+
+    @Override
+    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame input) {
+        inputFrame = input.rgba();
+        processImage(inputFrame.getNativeObjAddr(), processedFrame.getNativeObjAddr());
+        return processedFrame;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!OpenCVLoader.initDebug()) {
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, loaderCallback);
+        } else {
+            loaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+        }
+    }
 }

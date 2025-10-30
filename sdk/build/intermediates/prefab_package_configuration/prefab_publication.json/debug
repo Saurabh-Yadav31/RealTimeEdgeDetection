@@ -1,0 +1,26 @@
+{
+  "installationFolder": "C:\\Users\\Saurabh\\AndroidStudioProjects\\RealTimeEdgeDetection\\sdk\\build\\intermediates\\prefab_package\\debug\\prefab",
+  "gradlePath": ":sdk",
+  "packageInfo": {
+    "packageName": "sdk",
+    "packageSchemaVersion": 2,
+    "packageDependencies": [],
+    "modules": [
+      {
+        "moduleName": "opencv_jni_shared",
+        "moduleHeaders": "C:\\Users\\Saurabh\\AndroidStudioProjects\\RealTimeEdgeDetection\\sdk\\native\\jni\\include",
+        "moduleExportLibraries": [],
+        "abis": [
+          {
+            "abiName": "arm64-v8a",
+            "abiApi": 21,
+            "abiNdkMajor": 27,
+            "abiStl": "c++_shared",
+            "abiLibrary": "C:\\Users\\Saurabh\\AndroidStudioProjects\\RealTimeEdgeDetection\\sdk\\.cxx\\Debug\\64m52z5c\\arm64-v8a\\libopencv_jni_shared.a",
+            "abiAndroidGradleBuildJsonFile": "C:\\Users\\Saurabh\\AndroidStudioProjects\\RealTimeEdgeDetection\\sdk\\.cxx\\Debug\\64m52z5c\\arm64-v8a\\android_gradle_build.json"
+          }
+        ]
+      }
+    ]
+  }
+}
